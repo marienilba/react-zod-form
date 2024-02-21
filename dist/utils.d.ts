@@ -19,3 +19,4 @@ export declare function outObject(path: string[], object: Record<PropertyKey, an
  * @returns path[]
  */
 export declare function pathArray(path: string): string[];
+//# sourceMappingURL=utils.d.ts.map

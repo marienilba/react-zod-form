@@ -7,7 +7,7 @@ const form_utils_1 = require("./form-utils");
 const utils_1 = require("./utils");
 const zod_utils_1 = require("./zod-utils");
 function useForm(schema, submit) {
-    const [errors, setErrors] = (0, react_1.useState)(new zod_1.ZodError([]));
+    const [errors, setErrors] = (0, react_1.useState)(new zod_1.z.ZodError([]));
     const mock = FormUtil.mock(schema);
     return {
         form: {
@@ -16,7 +16,7 @@ function useForm(schema, submit) {
                     event.preventDefault();
                 const result = await FormUtil.process(schema, event);
                 // @ts-ignore
-                setErrors(result.success ? new zod_1.ZodError([]) : result.error);
+                setErrors(result.success ? new ZodError([]) : result.error);
                 const ctx = await submit(Object.assign(event, result));
                 if (ctx)
                     setErrors(ctx);
@@ -48,7 +48,7 @@ class FormUtil {
                         const validate = await validation.current.safeParseAsync(nestOut);
                         if (validate.success) {
                             setState(validate.data);
-                            setError((errors) => new zod_1.ZodError(errors.errors.filter((error) => !(0, utils_1.implied)(error.path, (0, utils_1.pathArray)(path)))));
+                            setError((errors) => new zod_1.z.ZodError(errors.errors.filter((error) => !(0, utils_1.implied)(error.path, (0, utils_1.pathArray)(path)))));
                         }
                         else {
                             setError((error) => {
@@ -59,7 +59,7 @@ class FormUtil {
                                 validate.error.errors.forEach((error) => {
                                     error.path = ep;
                                 });
-                                return new zod_1.ZodError([
+                                return new zod_1.z.ZodError([
                                     ...error.errors.filter((error) => !(0, utils_1.implied)(error.path, ep)),
                                     ...validate.error.errors,
                                 ]);
@@ -86,10 +86,10 @@ class FormUtil {
         const throughed = (0, zod_utils_1.through)(schema);
         const obj = (0, zod_utils_1.object)(throughed);
         const shape = obj[tar];
-        if ((0, zod_utils_1.through)(shape) instanceof zod_1.ZodObject) {
+        if ((0, zod_utils_1.through)(shape) instanceof zod_1.z.ZodObject) {
             return FormUtil.extraction(shape, path);
         }
-        else if ((0, zod_utils_1.through)(shape) instanceof zod_1.ZodArray) {
+        else if ((0, zod_utils_1.through)(shape) instanceof zod_1.z.ZodArray) {
             if (path.length)
                 return FormUtil.extraction((0, zod_utils_1.array)(shape), path);
             else
@@ -213,3 +213,4 @@ class FormUtil {
         return mock ?? {};
     }
 }
+//# sourceMappingURL=index.js.map

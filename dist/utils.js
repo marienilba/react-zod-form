@@ -44,3 +44,4 @@ function pathArray(path) {
         .map((match) => match.slice(1, -1));
 }
 exports.pathArray = pathArray;
+//# sourceMappingURL=utils.js.map

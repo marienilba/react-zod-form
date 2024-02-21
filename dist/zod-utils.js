@@ -28,14 +28,14 @@ exports.through = through;
  * @returns
  */
 function out(schema, effect = true) {
-    if (schema instanceof zod_1.ZodOptional ||
-        schema instanceof zod_1.ZodNullable ||
-        schema instanceof zod_1.ZodBranded ||
-        schema instanceof zod_1.ZodPromise)
+    if (schema instanceof zod_1.z.ZodOptional ||
+        schema instanceof zod_1.z.ZodNullable ||
+        schema instanceof zod_1.z.ZodBranded ||
+        schema instanceof zod_1.z.ZodPromise)
         return schema.unwrap();
-    if (schema instanceof zod_1.ZodDefault)
+    if (schema instanceof zod_1.z.ZodDefault)
         return schema.removeDefault();
-    if (effect && schema instanceof zod_1.ZodEffects)
+    if (effect && schema instanceof zod_1.z.ZodEffects)
         return schema.innerType();
     throw new Error(`schema ${schema.description} can't be outed`);
 }
@@ -46,12 +46,12 @@ exports.out = out;
  * @returns boolean
  */
 function outable(schema, effect = true) {
-    return ((effect && schema instanceof zod_1.ZodEffects) ||
-        schema instanceof zod_1.ZodOptional ||
-        schema instanceof zod_1.ZodBranded ||
-        schema instanceof zod_1.ZodNullable ||
-        schema instanceof zod_1.ZodDefault ||
-        schema instanceof zod_1.ZodPromise);
+    return ((effect && schema instanceof zod_1.z.ZodEffects) ||
+        schema instanceof zod_1.z.ZodOptional ||
+        schema instanceof zod_1.z.ZodBranded ||
+        schema instanceof zod_1.z.ZodNullable ||
+        schema instanceof zod_1.z.ZodDefault ||
+        schema instanceof zod_1.z.ZodPromise);
 }
 exports.outable = outable;
 /**
@@ -61,7 +61,7 @@ exports.outable = outable;
  */
 function object(schema) {
     const schemaObject = through(schema);
-    if (schemaObject instanceof zod_1.ZodObject)
+    if (schemaObject instanceof zod_1.z.ZodObject)
         return schemaObject.shape;
     throw new Error("The schema type must be a object");
 }
@@ -73,7 +73,7 @@ exports.object = object;
  */
 function array(schema) {
     const schemaArray = through(schema);
-    if (schemaArray instanceof zod_1.ZodArray)
+    if (schemaArray instanceof zod_1.z.ZodArray)
         return schemaArray.element;
     throw new Error("The schema type must be a array");
 }
@@ -105,10 +105,10 @@ function shapeOut(schema) {
             return null;
         return keys.reduce((obj, key) => {
             const value = through(schema[key]);
-            if (value instanceof zod_1.ZodObject) {
+            if (value instanceof zod_1.z.ZodObject) {
                 return { ...obj, [key]: shapeOut(shape(value)) };
             }
-            if (value instanceof zod_1.ZodArray) {
+            if (value instanceof zod_1.z.ZodArray) {
                 return { ...obj, [key]: [shapeOut(shape(value))] };
             }
             return { ...obj, [key]: null };
@@ -123,10 +123,11 @@ exports.shapeOut = shapeOut;
  * @returns shape
  */
 function shape(schema) {
-    if (schema instanceof zod_1.ZodArray || schema instanceof zod_1.ZodRecord)
+    if (schema instanceof zod_1.z.ZodArray || schema instanceof zod_1.z.ZodRecord)
         return shape(through(schema.element));
-    if (schema instanceof zod_1.ZodObject)
+    if (schema instanceof zod_1.z.ZodObject)
         return schema.shape;
     return schema;
 }
 exports.shape = shape;
+//# sourceMappingURL=zod-utils.js.map

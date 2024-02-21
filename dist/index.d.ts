@@ -4,8 +4,8 @@ declare global {
     }
 }
 import { FormEvent, RefObject } from "react";
-import { ZodError, ZodSchema, z } from "zod";
-export declare function useForm<TSchema extends ZodSchema>(schema: TSchema, submit: (event: FormEvent<HTMLFormElement> & z.SafeParseReturnType<z.infer<TSchema>, z.infer<TSchema>>) => ZodError<TSchema> | void | Promise<void | ZodError<TSchema>>): {
+import { z } from "zod";
+export declare function useForm<TSchema extends z.ZodSchema>(schema: TSchema, submit: (event: FormEvent<HTMLFormElement> & z.SafeParseReturnType<z.infer<TSchema>, z.infer<TSchema>>) => z.ZodError<TSchema> | void | Promise<void | z.ZodError<TSchema>>): {
     form: {
         submit: (event: FormEvent<HTMLFormElement>) => Promise<void>;
     };
@@ -42,20 +42,21 @@ type DeepWrapField<T, P extends string = ""> = {
     };
 } & {};
 type DeepWrapErrorArray<T extends any[]> = <I>(index?: I) => I extends number ? DeepWrapError<T[number]> & {
-    errors: () => ZodError<T[number]>["errors"] | undefined;
+    errors: () => z.ZodError<T[number]>["errors"] | undefined;
 } : {
-    errors: () => ZodError<T[number]>["errors"] | undefined;
+    errors: () => z.ZodError<T[number]>["errors"] | undefined;
 };
 type DeepWrapErrorObject<T> = () => DeepWrapError<T> & {
-    errors: () => ZodError<T>["errors"] | undefined;
+    errors: () => z.ZodError<T>["errors"] | undefined;
 };
 type DeepWrapError<T> = {
     [K in keyof T]: T[K] extends any[] ? DeepWrapErrorArray<T[K]> : T[K] extends {
         [x: string]: any;
     } ? DeepWrapErrorObject<T[K]> : () => {
-        errors: () => ZodError<T[K]>["errors"] | undefined;
+        errors: () => z.ZodError<T[K]>["errors"] | undefined;
     };
 } & {};
 type WatchPatcher<T extends string, M, N = false> = T extends `[${infer K}]${infer R}` ? N extends true ? R extends `[${infer RK}]${infer RR}` ? RK extends keyof M ? RR extends `[${string | number}]` ? M[RK] extends any[] ? `[${K}][${RK}]${WatchPatcher<RR, M[RK][number], true>}` : `[${K}][${RK}]${WatchPatcher<RR, M[RK]>}` : RR extends "" ? T : never : never : K extends `${number}` ? T : never : K extends keyof M ? R extends `[${string | number}]` ? M[K] extends any[] ? `[${K}]${WatchPatcher<R, M[K][number], true>}` : `[${K}]${WatchPatcher<R, M[K]>}` : R extends "" ? T : never : never : never;
 type WatchResult<T extends string, M> = T extends `[${infer K}]${infer R}` ? K extends `${number}` ? M extends any[] ? WatchResult<R, M[number]> : never : K extends keyof M ? WatchResult<R, M[K]> : never : M;
 export {};
+//# sourceMappingURL=index.d.ts.map

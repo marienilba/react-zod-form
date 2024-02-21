@@ -3,7 +3,7 @@ declare global {
         keys<T extends object>(o: T): (keyof T)[];
     }
 }
-import { FormEvent } from "react";
+import { FormEvent, RefObject } from "react";
 import { ZodError, ZodSchema, z } from "zod";
 export declare function useForm<TSchema extends ZodSchema>(schema: TSchema, submit: (event: FormEvent<HTMLFormElement> & z.SafeParseReturnType<z.infer<TSchema>, z.infer<TSchema>>) => ZodError<TSchema> | void | Promise<void | ZodError<TSchema>>): {
     form: {
@@ -17,11 +17,11 @@ export declare function useForm<TSchema extends ZodSchema>(schema: TSchema, subm
     errors: (DeepRemoveOptionals<TSchema["_type"]> extends infer T_1 ? { [K_1 in keyof T_1]: DeepRemoveOptionals<TSchema["_type"]>[K_1] extends any[] ? DeepWrapErrorArray<DeepRemoveOptionals<TSchema["_type"]>[K_1]> : DeepRemoveOptionals<TSchema["_type"]>[K_1] extends {
         [x: string]: any;
     } ? DeepWrapErrorObject<DeepRemoveOptionals<TSchema["_type"]>[K_1]> : () => {
-        errors: () => z.ZodIssue[];
+        errors: () => z.ZodIssue[] | undefined;
     }; } : never) & {
-        errors: () => any;
+        errors: () => z.ZodIssue[];
     };
-    watch: <TPath extends string>(ref: RefObject<HTMLFormElement>, path: WatchPatcher<TPath, DeepRemoveOptionals<TSchema["_type"]>, false>) => WatchResult<TPath, DeepRemoveOptionals<TSchema["_type"]>>;
+    watch: <TPath extends string>(ref: RefObject<HTMLFormElement>, path: WatchPatcher<TPath, DeepRemoveOptionals<TSchema["_type"]>, false>) => WatchResult<TPath, DeepRemoveOptionals<TSchema["_type"]>> | null;
 };
 type DeepRemoveOptionals<T> = T extends object ? {
     [K in keyof T]-?: DeepRemoveOptionals<T[K]>;

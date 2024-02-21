@@ -29,7 +29,7 @@ function implied(target, path) {
 }
 exports.implied = implied;
 function outObject(path, object) {
-    return path.reduce((result, key) => result === null || result === void 0 ? void 0 : result[key], object);
+    return path.reduce((result, key) => result?.[key], object);
 }
 exports.outObject = outObject;
 /**

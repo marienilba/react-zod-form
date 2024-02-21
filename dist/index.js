@@ -69,7 +69,7 @@ class FormUtil {
                 };
                 if (ref.current)
                     ref.current.addEventListener("input", listener);
-                return () => { var _a; return (_a = ref.current) === null || _a === void 0 ? void 0 : _a.removeEventListener("input", listener); };
+                return () => ref.current?.removeEventListener("input", listener);
             }, [ref]);
             return state;
         };
@@ -210,6 +210,6 @@ class FormUtil {
     static mock(schema) {
         const shape = (0, zod_utils_1.object)(schema);
         const mock = (0, zod_utils_1.shapeOut)(shape);
-        return mock !== null && mock !== void 0 ? mock : {};
+        return mock ?? {};
     }
 }

@@ -1,9 +1,18 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
     "module": "commonjs",
-    "target": "es2019",
-    "declaration": true,
-    "outDir": "./dist"
+    "target": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "declaration": true
   },
   "include": ["src/**/*"]
 }

@@ -1,6 +1,6 @@
 {
   "name": "@marienilba/react-zod-form",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "/dist"
   ],
   "devDependencies": {
+    "@types/react": "^18.2.57",
     "typescript": "^5.3.3"
   }
 }

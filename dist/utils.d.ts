@@ -12,7 +12,7 @@ export declare function arrayEquals(array1: PropertyKey[], array2: PropertyKey[]
  * @returns
  */
 export declare function implied(target: PropertyKey[], path: PropertyKey[]): boolean;
-export declare function outObject(path: string[], object: Record<PropertyKey, any>): any;
+export declare function outObject(path: string[], object: Record<PropertyKey, any>): Record<PropertyKey, any>;
 /**
  * Return path [] format to array format
  * @param path

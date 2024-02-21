@@ -3,15 +3,15 @@ import {
   ZodBranded,
   ZodDefault,
   ZodEffects,
+  ZodError,
   ZodNullable,
   ZodObject,
   ZodOptional,
   ZodPromise,
+  ZodRawShape,
   ZodRecord,
+  ZodSchema,
   z,
-  type ZodError,
-  type ZodRawShape,
-  type ZodSchema,
 } from "zod";
 import { implied } from "./utils";
 

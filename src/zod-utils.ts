@@ -1,28 +1,14 @@
-import {
-  ZodArray,
-  ZodBranded,
-  ZodDefault,
-  ZodEffects,
-  ZodError,
-  ZodNullable,
-  ZodObject,
-  ZodOptional,
-  ZodPromise,
-  ZodRawShape,
-  ZodRecord,
-  ZodSchema,
-  z,
-} from "zod";
+import { z } from "zod";
 import { implied } from "./utils";
 
-export function findError(errors: ZodError, path: PropertyKey[]) {
+export function findError(errors: z.ZodError, path: PropertyKey[]) {
   return errors.errors.filter((error) => implied(error.path, path));
 }
 
 /**
  * Remove all effects, optionals etc
  */
-export function through<TSchema extends ZodSchema>(
+export function through<TSchema extends z.ZodSchema>(
   schema: TSchema,
   promise = true
 ) {
@@ -42,17 +28,20 @@ export function through<TSchema extends ZodSchema>(
  * @param schema
  * @returns
  */
-export function out<TSchema extends ZodSchema>(schema: TSchema, effect = true) {
+export function out<TSchema extends z.ZodSchema>(
+  schema: TSchema,
+  effect = true
+) {
   if (
-    schema instanceof ZodOptional ||
-    schema instanceof ZodNullable ||
-    schema instanceof ZodBranded ||
-    schema instanceof ZodPromise
+    schema instanceof z.ZodOptional ||
+    schema instanceof z.ZodNullable ||
+    schema instanceof z.ZodBranded ||
+    schema instanceof z.ZodPromise
   )
     return schema.unwrap();
 
-  if (schema instanceof ZodDefault) return schema.removeDefault();
-  if (effect && schema instanceof ZodEffects) return schema.innerType();
+  if (schema instanceof z.ZodDefault) return schema.removeDefault();
+  if (effect && schema instanceof z.ZodEffects) return schema.innerType();
 
   throw new Error(`schema ${schema.description} can't be outed`);
 }
@@ -62,17 +51,17 @@ export function out<TSchema extends ZodSchema>(schema: TSchema, effect = true) {
  * @param schema
  * @returns boolean
  */
-export function outable<TSchema extends ZodSchema>(
+export function outable<TSchema extends z.ZodSchema>(
   schema: TSchema,
   effect = true
 ) {
   return (
-    (effect && schema instanceof ZodEffects) ||
-    schema instanceof ZodOptional ||
-    schema instanceof ZodBranded ||
-    schema instanceof ZodNullable ||
-    schema instanceof ZodDefault ||
-    schema instanceof ZodPromise
+    (effect && schema instanceof z.ZodEffects) ||
+    schema instanceof z.ZodOptional ||
+    schema instanceof z.ZodBranded ||
+    schema instanceof z.ZodNullable ||
+    schema instanceof z.ZodDefault ||
+    schema instanceof z.ZodPromise
   );
 }
 
@@ -81,11 +70,11 @@ export function outable<TSchema extends ZodSchema>(
  * @param schema
  * @returns boolean
  */
-export function object<TSchema extends ZodSchema>(
+export function object<TSchema extends z.ZodSchema>(
   schema: TSchema
-): ZodRawShape {
+): z.ZodRawShape {
   const schemaObject = through(schema);
-  if (schemaObject instanceof ZodObject) return schemaObject.shape;
+  if (schemaObject instanceof z.ZodObject) return schemaObject.shape;
   throw new Error("The schema type must be a object");
 }
 
@@ -94,9 +83,11 @@ export function object<TSchema extends ZodSchema>(
  * @param schema
  * @returns boolean
  */
-export function array<TSchema extends ZodSchema>(schema: TSchema): ZodSchema {
+export function array<TSchema extends z.ZodSchema>(
+  schema: TSchema
+): z.ZodSchema {
   const schemaArray = through(schema);
-  if (schemaArray instanceof ZodArray) return schemaArray.element;
+  if (schemaArray instanceof z.ZodArray) return schemaArray.element;
   throw new Error("The schema type must be a array");
 }
 
@@ -104,7 +95,9 @@ export function array<TSchema extends ZodSchema>(schema: TSchema): ZodSchema {
  * Assert schema has a promise function
  * @param schema
  */
-export function promises<TSchema extends ZodSchema>(schema: TSchema): boolean {
+export function promises<TSchema extends z.ZodSchema>(
+  schema: TSchema
+): boolean {
   try {
     schema.parse(z.NEVER, { async: true });
   } catch (error) {
@@ -121,20 +114,20 @@ export function promises<TSchema extends ZodSchema>(schema: TSchema): boolean {
  * @param schema
  * @returns object
  */
-export function shapeOut<TSchema extends ZodRawShape>(
+export function shapeOut<TSchema extends z.ZodRawShape>(
   schema: TSchema
 ): Record<PropertyKey, any> | null {
   if (schema.constructor === Object) {
     const keys = Object.keys(schema);
     if (keys.length === 0) return null;
     return keys.reduce((obj, key) => {
-      const value = through(schema[key] as ZodSchema);
+      const value = through(schema[key] as z.ZodSchema);
 
-      if (value instanceof ZodObject) {
+      if (value instanceof z.ZodObject) {
         return { ...obj, [key]: shapeOut(shape(value)) };
       }
 
-      if (value instanceof ZodArray) {
+      if (value instanceof z.ZodArray) {
         return { ...obj, [key]: [shapeOut(shape(value))] };
       }
 
@@ -150,11 +143,11 @@ export function shapeOut<TSchema extends ZodRawShape>(
  * @param schema
  * @returns shape
  */
-export function shape<TSchema extends ZodSchema>(schema: TSchema): any {
-  if (schema instanceof ZodArray || schema instanceof ZodRecord)
+export function shape<TSchema extends z.ZodSchema>(schema: TSchema): any {
+  if (schema instanceof z.ZodArray || schema instanceof z.ZodRecord)
     return shape(through(schema.element));
 
-  if (schema instanceof ZodObject) return schema.shape;
+  if (schema instanceof z.ZodObject) return schema.shape;
 
   return schema;
 }

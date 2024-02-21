@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ZodArray, ZodError, ZodObject, ZodSchema, z } from "zod";
+import { z } from "zod";
 import { mapObject } from "./form-utils";
 import { implied, outObject, pathArray } from "./utils";
 import {
@@ -25,15 +25,15 @@ import {
   through,
 } from "./zod-utils";
 
-export function useForm<TSchema extends ZodSchema>(
+export function useForm<TSchema extends z.ZodSchema>(
   schema: TSchema,
   submit: (
     event: FormEvent<HTMLFormElement> &
       z.SafeParseReturnType<z.infer<TSchema>, z.infer<TSchema>>
-  ) => ZodError<TSchema> | void | Promise<void | ZodError<TSchema>>
+  ) => z.ZodError<TSchema> | void | Promise<void | z.ZodError<TSchema>>
 ) {
   const [errors, setErrors] = useState<z.ZodError<z.infer<TSchema>>>(
-    new ZodError([])
+    new z.ZodError([])
   );
 
   const mock = FormUtil.mock(schema);
@@ -58,9 +58,9 @@ export function useForm<TSchema extends ZodSchema>(
 }
 
 class FormUtil {
-  static generateWatch<TSchema extends ZodSchema>(
+  static generateWatch<TSchema extends z.ZodSchema>(
     schema: TSchema,
-    setError: Dispatch<SetStateAction<ZodError>>
+    setError: Dispatch<SetStateAction<z.ZodError>>
   ) {
     return <TPath extends string>(
       ref: RefObject<HTMLFormElement>,
@@ -92,7 +92,7 @@ class FormUtil {
               setState(validate.data);
               setError(
                 (errors) =>
-                  new ZodError(
+                  new z.ZodError(
                     errors.errors.filter(
                       (error) => !implied(error.path, pathArray(path))
                     )
@@ -106,10 +106,10 @@ class FormUtil {
                 if (input) input.reportValidity();
 
                 const ep = pathArray(path);
-                validate.error.errors.forEach((error) => {
+                validate.error.errors.forEach((error: any) => {
                   error.path = ep;
                 });
-                return new ZodError([
+                return new z.ZodError([
                   ...error.errors.filter((error) => !implied(error.path, ep)),
                   ...validate.error.errors,
                 ]);
@@ -131,10 +131,10 @@ class FormUtil {
    * @param schema
    * @param path
    */
-  static extraction<TSchema extends ZodSchema>(
+  static extraction<TSchema extends z.ZodSchema>(
     schema: TSchema,
     path: string[]
-  ): ZodSchema<any> | undefined {
+  ): z.ZodSchema<any> | undefined {
     const tar = path.shift();
     if (tar === undefined) return schema;
 
@@ -142,9 +142,9 @@ class FormUtil {
     const obj = object(throughed);
 
     const shape = obj[tar]!;
-    if (through(shape) instanceof ZodObject) {
+    if (through(shape) instanceof z.ZodObject) {
       return FormUtil.extraction(shape, path);
-    } else if (through(shape) instanceof ZodArray) {
+    } else if (through(shape) instanceof z.ZodArray) {
       if (path.length) return FormUtil.extraction(array(shape), path);
       else return shape;
     }
@@ -158,7 +158,7 @@ class FormUtil {
    * @param event
    * @returns ZodSafeParse
    */
-  static async process<TSchema extends ZodSchema>(
+  static async process<TSchema extends z.ZodSchema>(
     schema: TSchema,
     event: FormEvent<HTMLFormElement>
   ) {
@@ -236,7 +236,7 @@ class FormUtil {
    */
   static generateErrors<
     TObject extends Record<PropertyKey, any>,
-    TError extends ZodError
+    TError extends z.ZodError
   >(
     object: TObject,
     errors: TError,
@@ -308,7 +308,7 @@ class FormUtil {
    * @param schema
    * @returns mock
    */
-  static mock<TSchema extends ZodSchema>(schema: TSchema): TSchema["_type"] {
+  static mock<TSchema extends z.ZodSchema>(schema: TSchema): TSchema["_type"] {
     const shape = object(schema);
     const mock = shapeOut(shape);
 
@@ -349,12 +349,12 @@ type DeepWrapField<T, P extends string = ""> = {
 
 type DeepWrapErrorArray<T extends any[]> = <I>(index?: I) => I extends number
   ? DeepWrapError<T[number]> & {
-      errors: () => ZodError<T[number]>["errors"] | undefined;
+      errors: () => z.ZodError<T[number]>["errors"] | undefined;
     }
-  : { errors: () => ZodError<T[number]>["errors"] | undefined };
+  : { errors: () => z.ZodError<T[number]>["errors"] | undefined };
 
 type DeepWrapErrorObject<T> = () => DeepWrapError<T> & {
-  errors: () => ZodError<T>["errors"] | undefined;
+  errors: () => z.ZodError<T>["errors"] | undefined;
 };
 
 type DeepWrapError<T> = {
@@ -362,7 +362,7 @@ type DeepWrapError<T> = {
     ? DeepWrapErrorArray<T[K]>
     : T[K] extends { [x: string]: any }
     ? DeepWrapErrorObject<T[K]>
-    : () => { errors: () => ZodError<T[K]>["errors"] | undefined };
+    : () => { errors: () => z.ZodError<T[K]>["errors"] | undefined };
 } & {};
 
 type WatchPatcher<

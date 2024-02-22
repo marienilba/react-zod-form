@@ -46,7 +46,7 @@ export function useForm<TSchema extends z.ZodSchema>(
         if (promises(schema)) event.preventDefault();
         const result = await FormUtil.process(schema, event);
         // @ts-ignore
-        setErrors(result.success ? new ZodError([]) : result.error);
+        setErrors(result.success ? new z.ZodError([]) : result.error);
         const ctx = await submit(Object.assign(event, result));
         if (ctx) setErrors(ctx);
       },

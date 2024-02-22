@@ -19,6 +19,8 @@ import { implied, outObject, pathArray } from "./utils";
 import {
   array,
   findError,
+  isZodArray,
+  isZodObject,
   object,
   promises,
   shapeOut,
@@ -142,9 +144,9 @@ class FormUtil {
     const obj = object(throughed);
 
     const shape = obj[tar]!;
-    if (through(shape) instanceof z.ZodObject) {
+    if (isZodObject(through(shape))) {
       return FormUtil.extraction(shape, path);
-    } else if (through(shape) instanceof z.ZodArray) {
+    } else if (isZodArray(through(shape))) {
       if (path.length) return FormUtil.extraction(array(shape), path);
       else return shape;
     }

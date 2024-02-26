@@ -37,6 +37,10 @@ export function mapArray(obj: any): Record<PropertyKey, any> {
     return obj;
   }
 
+  if (typeof obj === "object" && obj.constructor !== Object) {
+    return obj;
+  }
+
   if (Array.isArray(obj) || isNumericKeys(obj)) {
     return Object.values(obj).map(mapArray);
   }

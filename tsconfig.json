@@ -4,6 +4,7 @@
     "target": "esnext",
     "lib": ["es2018", "dom", "esnext", "DOM.Iterable"],
     "moduleResolution": "node",
+    "types": ["node"],
     "jsx": "react",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -15,6 +16,6 @@
     "esModuleInterop": true,
     "declaration": true
   },
-  "include": ["src"],
+  "include": ["src", "e2e"],
   "exclude": ["node_modules", "dist"]
 }

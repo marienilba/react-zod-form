@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "tsc --p ./tsconfig.build.json",
-    "test": ""
+    "dev": "vite"
   },
   "author": "Marie Nilba",
   "license": "ISC",
@@ -23,9 +23,13 @@
     "/dist"
   ],
   "devDependencies": {
+    "@types/node": "^20.11.24",
     "@types/react": "^18.2.57",
-    "typescript": "^5.3.3",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
     "react": "^18.2.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4",
     "zod": "^3.22.4"
   }
 }
